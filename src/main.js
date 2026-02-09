@@ -13,7 +13,8 @@ const scene = new THREE.Scene();
 // --- 2. Loaders ---
 const textureLoader = new THREE.TextureLoader();
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/draco/');
+// REMOVED leading slash so it works on GitHub Pages subfolder
+dracoLoader.setDecoderPath('draco/'); 
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
@@ -24,14 +25,15 @@ const socialLinks = {
 };
 
 const textureMap = {
-  backdrop: "/textures/room/backdrop.webp",
-  room: "/textures/room/background.001.webp",
-  github: "/textures/room/Poster.001.webp",
-  linkedin: "/textures/room/Poster.001.webp",
-  chair: "/textures/room/chair2.webp",
-  table: "/textures/room/drawerlamptable.webp",
-  headset: "/textures/room/headset.webp",
-  deskobjects: "/textures/room/deskobjects.webp"
+  // REMOVED all leading slashes from texture paths
+  backdrop: "textures/room/backdrop.webp",
+  room: "textures/room/background.001.webp",
+  github: "textures/room/Poster.001.webp",
+  linkedin: "textures/room/Poster.001.webp",
+  chair: "textures/room/chair2.webp",
+  table: "textures/room/drawerlamptable.webp",
+  headset: "textures/room/headset.webp",
+  deskobjects: "textures/room/deskobjects.webp"
 };
 
 const loadedTextures = {};
@@ -41,7 +43,7 @@ Object.entries(textureMap).forEach(([key, path]) => {
   texture.colorSpace = THREE.SRGBColorSpace;
   loadedTextures[key] = new THREE.MeshBasicMaterial({ 
     map: texture,
-    color: new THREE.Color(1.2, 1.2, 1.2) // Boosted saturation for your posters and room
+    color: new THREE.Color(1.2, 1.2, 1.2) 
   })
 });
 
@@ -75,7 +77,8 @@ const glassMaterial = new THREE.MeshPhysicalMaterial({
   transmission: 1, thickness: 0.5, roughness: 0.05, transparent: true 
 });
 
-loader.load('/models/profile.glb', (gltf) => {
+// REMOVED leading slash from model path
+loader.load('models/profile.glb', (gltf) => {
   gltf.scene.traverse((child) => {
     if (child.isMesh) {
       const textureKey = Object.keys(loadedTextures).find(key => key.toLowerCase() === child.name.toLowerCase());
@@ -90,7 +93,6 @@ loader.load('/models/profile.glb', (gltf) => {
         clickableObjects.push(child);
         const shadow = createShadow();
 
-        // Specific positioning for each social poster
         shadow.rotation.y = Math.PI / 2; 
         if (name.includes("linkedin")) {
           shadow.position.set(child.position.x - 0.001, child.position.y + 0.4, child.position.z - 0.4);
@@ -108,13 +110,11 @@ loader.load('/models/profile.glb', (gltf) => {
         child.scale.set(0, 0, 0);
         const delay = name.includes("linkedin") ? 0.2 : 0.6;
         
-        // Poster Pop-in
         gsap.to(child.scale, { 
           x: originalScale.x, y: originalScale.y, z: originalScale.z, 
           duration: 1.2, delay, ease: "back.out(1.7)" 
         });
 
-        // Shadow Pop-in
         gsap.to(shadow.scale, { 
           x: originalScale.z * 1.4, y: originalScale.y * 0.8, z: 1, 
           duration: 1.2, delay, ease: "back.out(1.7)" 
@@ -128,7 +128,6 @@ loader.load('/models/profile.glb', (gltf) => {
   });
   scene.add(gltf.scene);
 
-  // --- Camera Entrance Animation ---
   const tl = gsap.timeline();
   tl.to(camera.position, { 
     x: 13.88, 
@@ -139,15 +138,12 @@ loader.load('/models/profile.glb', (gltf) => {
     onUpdate: () => controls.update() 
   });
 
-  // UI Widget Entrance
   tl.to("#ui-widget", { opacity: 1, duration: 0.3 }, "-=0.5"); 
   tl.to("#ui-widget", { height: "260px", duration: 1.5, ease: "expo.out" });
 });
 
 // --- 6. Camera, Renderer, Controls ---
 const camera = new THREE.PerspectiveCamera(28, sizes.width / sizes.height, 0.1, 1000);
-
-// Starting Position from your debug feedback
 camera.position.set(8.29, 13.54, 19.49); 
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -161,11 +157,10 @@ controls.enableRotate = false;
 controls.enableZoom = false;   
 controls.enablePan = false;
 
-// Final Target from your debug feedback
 controls.target.set(-1.34, 2.39, -2.09); 
 controls.update();
 
-// --- 7. Interactivity (Raycasting) ---
+// --- 7. Interactivity ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredObject = null;
