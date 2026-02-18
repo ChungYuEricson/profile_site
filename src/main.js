@@ -105,7 +105,7 @@ loader.load('models/profile.glb', (gltf) => {
         child.userData.shadow = shadow;
 
         child.scale.set(0, 0, 0);
-        const delay = name.includes("github") ? 0.2 : 0.6;
+        const delay = name.includes("linkedin") ? 1.0 : 0.6;
         
         gsap.to(child.scale, { 
           x: originalScale.x, y: originalScale.y, z: originalScale.z, 
