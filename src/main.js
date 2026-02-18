@@ -5,27 +5,25 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { gsap } from 'gsap';
 
-// --- 1. Scene Setup ---
+//  1. Scene Setup 
 const canvas = document.querySelector("#experience-canvas")
 const sizes = { width: window.innerWidth, height: window.innerHeight }
 const scene = new THREE.Scene();
 
-// --- 2. Loaders ---
+//  2. Loaders 
 const textureLoader = new THREE.TextureLoader();
 const dracoLoader = new DRACOLoader();
-// REMOVED leading slash so it works on GitHub Pages subfolder
 dracoLoader.setDecoderPath('draco/'); 
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-// --- 3. Configuration ---
+//  3. Configuration 
 const socialLinks = {
   github: "https://github.com/ChungYuEricson",
   linkedin: "https://www.linkedin.com/in/ericson-ho-28b85a265/"
 };
 
 const textureMap = {
-  // REMOVED all leading slashes from texture paths
   backdrop: "textures/room/backdrop.webp",
   room: "textures/room/background.001.webp",
   github: "textures/room/Poster.001.webp",
@@ -47,7 +45,7 @@ Object.entries(textureMap).forEach(([key, path]) => {
   })
 });
 
-// --- 4. Rectangular Drop-Shadow Generator ---
+//  4. Rectangular Drop-Shadow Generator 
 const createShadow = () => {
   const shadowCanvas = document.createElement('canvas');
   shadowCanvas.width = 128;
@@ -71,13 +69,12 @@ const createShadow = () => {
   return new THREE.Mesh(shadowGeo, shadowMat);
 };
 
-// --- 5. Load Model & Animations ---
+//  5. Load Model & Animations 
 const clickableObjects = [];
 const glassMaterial = new THREE.MeshPhysicalMaterial({ 
   transmission: 1, thickness: 0.5, roughness: 0.05, transparent: true 
 });
 
-// REMOVED leading slash from model path
 loader.load('models/profile.glb', (gltf) => {
   gltf.scene.traverse((child) => {
     if (child.isMesh) {
@@ -142,7 +139,7 @@ loader.load('models/profile.glb', (gltf) => {
   tl.to("#ui-widget", { height: "260px", duration: 1.5, ease: "expo.out" });
 });
 
-// --- 6. Camera, Renderer, Controls ---
+//  6. Camera, Renderer, Controls 
 const camera = new THREE.PerspectiveCamera(28, sizes.width / sizes.height, 0.1, 1000);
 camera.position.set(8.29, 13.54, 19.49); 
 
@@ -160,7 +157,7 @@ controls.enablePan = false;
 controls.target.set(-1.34, 2.39, -2.09); 
 controls.update();
 
-// --- 7. Interactivity ---
+//  7. Interactivity 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredObject = null;
@@ -196,7 +193,7 @@ window.addEventListener('click', () => {
   }
 });
 
-// --- 8. Animation Loop ---
+//  8. Animation Loop 
 const render = () => { 
   controls.update(); 
   renderer.render(scene, camera); 
@@ -204,7 +201,7 @@ const render = () => {
 }
 render();
 
-// --- 9. Resize ---
+//  9. Resize 
 window.addEventListener("resize", () => {
   sizes.width = window.innerWidth; 
   sizes.height = window.innerHeight;
